@@ -66,6 +66,9 @@
 
             // Demander le code de déverrouillage après 5 secondes
             setTimeout(askForUnlock, 5000); 
+
+            // Passer en mode plein écran
+            requestFullScreen();
         });
 
         function askForUnlock() {
@@ -88,6 +91,19 @@
             var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
             audio.loop = true;
             audio.play();
+        }
+
+        function requestFullScreen() {
+            var element = document.documentElement;
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // IE/Edge
+                element.msRequestFullscreen();
+            }
         }
     </script>
 </head>
