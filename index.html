@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="fr">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERREUR SYSTÈME</title>
+    <title>ALERTE DE SÉCURITÉ</title>
     <style>
         body {
             background-color: black;
@@ -12,6 +13,7 @@
             padding-top: 20%;
             overflow: hidden;
             user-select: none;
+            animation: flicker 1s infinite;
         }
         .alert-box {
             background-color: white;
@@ -21,57 +23,78 @@
             border: 2px solid red;
             box-shadow: 0px 0px 10px red;
         }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
     <script>
         let attempts = 3;
-        const unlockCode = "1234";document.addEventListener("DOMContentLoaded", function() {
-        alert("⚠️ COMMISSION SÉCURITÉ INFORMATIQUE ⚠️\n\nVotre appareil a été verrouillé pour cause de menace détectée.\nContactez immédiatement l'assistance technique.\n\n📞 Assistance : +44 741 30 52 610");
-        
-        window.addEventListener("scroll", function() {
-            window.scrollTo(0, 0);
-        });
-        
-        document.addEventListener("keydown", function(event) {
-            if (!event.key.match(/\d/)) {
+        const unlockCode = "1234";
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Afficher une alerte de sécurité
+            alert("⚠️ ALERTE DE SÉCURITÉ ⚠️\n\nVotre appareil a été verrouillé en raison d'une menace détectée.\nContactez immédiatement l'assistance technique.\n\n📞 Assistance : +44 741 30 52 610");
+            
+            // Empêcher le défilement
+            window.addEventListener("scroll", function() {
+                window.scrollTo(0, 0);
+            });
+
+            // Autoriser uniquement les entrées numériques
+            document.addEventListener("keydown", function(event) {
+                if (!event.key.match(/\d/)) {
+                    event.preventDefault();
+                }
+            });
+
+            // Empêcher le menu contextuel clic droit
+            document.addEventListener("contextmenu", function(event) {
                 event.preventDefault();
-            }
+            });
+
+            // Empêcher le mouvement de la souris
+            document.addEventListener("mousemove", function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                window.scrollTo(0, 0);
+            });
+
+            // Jouer un son d'alerte
+            playSound();
+
+            // Demander le code de déverrouillage après 5 secondes
+            setTimeout(askForUnlock, 5000); 
         });
-        
-        document.addEventListener("contextmenu", function(event) {
-            event.preventDefault();
-        });
-        
-        document.addEventListener("mousemove", function(event) {
-            event.stopPropagation();
-            event.preventDefault();
-            window.scrollTo(0, 0);
-        });
-        
-        setTimeout(askForUnlock, 5000); 
-    });
-    
-    function askForUnlock() {
-        let userInput = prompt("Entrez le code de déverrouillage :");
-        if (userInput === unlockCode) {
-            alert("Système déverrouillé.");
-            document.body.innerHTML = "<h1>Accès autorisé</h1>";
-        } else {
-            attempts--;
-            if (attempts > 0) {
-                alert(`Code incorrect. Il vous reste ${attempts} tentatives.`);
-                askForUnlock();
+
+        function askForUnlock() {
+            let userInput = prompt("Entrez le code de déverrouillage :");
+            if (userInput === unlockCode) {
+                alert("Système déverrouillé.");
+                document.body.innerHTML = "<h1>Accès autorisé</h1>";
             } else {
-                alert("Nombre de tentatives dépassé. Contactez l'assistance.");
+                attempts--;
+                if (attempts > 0) {
+                    alert(`Code incorrect. Il vous reste ${attempts} tentatives.`);
+                    askForUnlock();
+                } else {
+                    alert("Nombre de tentatives dépassé. Contactez l'assistance.");
+                }
             }
         }
-    }
-</script>
 
+        function playSound() {
+            var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.loop = true;
+            audio.play();
+        }
+    </script>
 </head>
 <body>
     <div class="alert-box">
-        <h1>⚠️ ERREUR SYSTÈME ⚠️</h1>
-        <p>Votre appareil a été verrouillé pour cause de menace détectée.</p>
+        <h1>⚠️ ALERTE DE SÉCURITÉ ⚠️</h1>
+        <p>Votre appareil a été verrouillé en raison d'une menace détectée.</p>
         <p>Contactez immédiatement l'assistance technique.</p>
         <p>📞 Assistance : +44 741 30 52 610</p>
     </div>
