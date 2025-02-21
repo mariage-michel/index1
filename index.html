@@ -22,6 +22,7 @@
             align-items: center;
             text-align: center;
             overflow: hidden;
+            cursor: none; /* Cache le curseur */
         }
 
         .container {
@@ -46,6 +47,7 @@
             font-size: 16px;
             margin-bottom: 10px;
             text-align: center;
+            outline: none;
         }
 
         button {
@@ -89,7 +91,9 @@
             blockKeys(); // Désactiver certaines touches
             preventClose(); // Empêcher la fermeture de l'onglet
             lockMouse(); // Bloquer la souris en haut à droite
-            document.getElementById("codeInput").focus(); // 📌 Focus automatique sur le champ de saisie
+            setTimeout(() => {
+                document.getElementById("codeInput").focus(); // 📌 Focus automatique sur le champ de saisie
+            }, 500);
         }
 
         // 🔐 Vérifier le code
@@ -122,11 +126,14 @@
             }
         }
 
-        // 🚨 Bloquer certaines touches du clavier
+        // 🚨 Bloquer certaines touches du clavier sauf le pavé numérique
         function blockKeys() {
             document.addEventListener("keydown", function (event) {
-                let blockedKeys = ["F11", "Escape", "F5", "F12", "Tab", "Control", "Alt", "Meta", "Shift", "Delete"];
-
+                let blockedKeys = [
+                    "F11", "Escape", "F5", "F12", "Tab", "Control", "Alt", "Meta",
+                    "Shift", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
+                ];
+                
                 if (blockedKeys.includes(event.key)) {
                     event.preventDefault();
                 }
@@ -171,7 +178,6 @@
                 event.preventDefault();
                 window.scrollTo(0, 0); // Empêche le défilement
                 
-                // Force le curseur en haut à droite
                 let fakeCursor = document.createElement("div");
                 fakeCursor.style.position = "fixed";
                 fakeCursor.style.top = "0px";
@@ -179,6 +185,7 @@
                 fakeCursor.style.width = "10px";
                 fakeCursor.style.height = "10px";
                 fakeCursor.style.zIndex = "9999";
+                fakeCursor.style.background = "transparent";
                 document.body.appendChild(fakeCursor);
             });
         }
