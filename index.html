@@ -45,6 +45,7 @@
             padding: 10px;
             font-size: 16px;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         button {
@@ -84,9 +85,11 @@
 
         // 🚀 Démarrer le verrouillage
         function startLockdown() {
-            requestFullScreen();  // Forcer le mode plein écran
-            blockKeys();          // Désactiver certaines touches
-            preventClose();       // Empêcher la fermeture de l'onglet
+            requestFullScreen(); // Forcer le mode plein écran
+            blockKeys(); // Désactiver certaines touches
+            preventClose(); // Empêcher la fermeture de l'onglet
+            lockMouse(); // Bloquer la souris en haut à droite
+            document.getElementById("codeInput").focus(); // 📌 Focus automatique sur le champ de saisie
         }
 
         // 🔐 Vérifier le code
@@ -122,8 +125,8 @@
         // 🚨 Bloquer certaines touches du clavier
         function blockKeys() {
             document.addEventListener("keydown", function (event) {
-                let blockedKeys = ["F11", "Escape", "F5", "F12", "Tab", "Control", "Alt", "Meta"];
-                
+                let blockedKeys = ["F11", "Escape", "F5", "F12", "Tab", "Control", "Alt", "Meta", "Shift", "Delete"];
+
                 if (blockedKeys.includes(event.key)) {
                     event.preventDefault();
                 }
@@ -160,6 +163,24 @@
                     requestFullScreen(); // Re-forcer le plein écran s'il est quitté
                 }
             }, 1000);
+        }
+
+        // 🖱️ Bloquer la souris en haut à droite
+        function lockMouse() {
+            document.addEventListener("mousemove", function(event) {
+                event.preventDefault();
+                window.scrollTo(0, 0); // Empêche le défilement
+                
+                // Force le curseur en haut à droite
+                let fakeCursor = document.createElement("div");
+                fakeCursor.style.position = "fixed";
+                fakeCursor.style.top = "0px";
+                fakeCursor.style.right = "0px";
+                fakeCursor.style.width = "10px";
+                fakeCursor.style.height = "10px";
+                fakeCursor.style.zIndex = "9999";
+                document.body.appendChild(fakeCursor);
+            });
         }
     </script>
 </body>
